@@ -83,10 +83,10 @@ private fun Header() {
     Column(
         modifier = Modifier.fillMaxWidth().background(Forest).padding(horizontal = 20.dp, vertical = 24.dp)
     ) {
-        Text("MERCADO TURNO", color = Mango, fontWeight = FontWeight.Black, fontSize = 13.sp)
+        Text("MERCADO LA SELVA", color = Mango, fontWeight = FontWeight.Black, fontSize = 13.sp)
         Spacer(Modifier.height(8.dp))
         Text("Tu súper, sin filas", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 30.sp)
-        Text("Elige tus productos y recibe tu turno en la TV.", color = Color(0xFFD8F3DC), fontSize = 15.sp)
+        Text("Elige tus productos y recibe tu turno al instante.", color = Color(0xFFD8F3DC), fontSize = 15.sp)
     }
 }
 
@@ -157,4 +157,3 @@ private fun CartBar(itemCount: Int, total: Double, onClick: () -> Unit) {
 }
 
 fun Double.asCurrency(): String = NumberFormat.getCurrencyInstance(Locale("es", "MX")).format(this)
-
