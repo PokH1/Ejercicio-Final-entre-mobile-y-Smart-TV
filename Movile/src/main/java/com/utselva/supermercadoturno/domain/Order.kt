@@ -1,6 +1,5 @@
 package com.utselva.supermercadoturno.domain
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -59,4 +58,3 @@ fun List<CartLine>.toOrderRequest(
     },
     total = sumOf(CartLine::subtotal)
 )
-
