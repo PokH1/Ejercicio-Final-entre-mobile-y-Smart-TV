@@ -41,7 +41,6 @@ fun CartScreen(
     state: CatalogUiState,
     onBack: () -> Unit,
     onNameChanged: (String) -> Unit,
-    onEndpointChanged: (String) -> Unit,
     onSubmit: () -> Unit
 ) {
     Scaffold(containerColor = MaterialTheme.colorScheme.background) { padding ->
@@ -81,20 +80,11 @@ fun CartScreen(
                 singleLine = true,
                 shape = RoundedCornerShape(14.dp)
             )
-            OutlinedTextField(
-                value = state.tvEndpoint,
-                onValueChange = onEndpointChanged,
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("Dirección WebSocket de la TV") },
-                supportingText = { Text("Ambos dispositivos deben estar en la misma red Wi-Fi") },
-                singleLine = true,
-                shape = RoundedCornerShape(14.dp)
-            )
             state.statusMessage?.let {
                 Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium)
             }
             Button(onClick = onSubmit, modifier = Modifier.fillMaxWidth().height(58.dp), shape = RoundedCornerShape(18.dp)) {
-                Text("Enviar pedido a la TV", fontWeight = FontWeight.Bold)
+                Text("Confirmar pedido", fontWeight = FontWeight.Bold)
             }
         }
     }
@@ -105,8 +95,8 @@ fun WaitingScreen(message: String?, onCancel: () -> Unit) {
     Box(Modifier.fillMaxSize().background(Forest).padding(28.dp), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(20.dp)) {
             CircularProgressIndicator(color = Mango, modifier = Modifier.size(56.dp))
-            Text("Enviando tu pedido", color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Bold)
-            Text(message ?: "Esperando respuesta…", color = Color(0xFFD8F3DC), textAlign = TextAlign.Center)
+            Text("Preparando tu pedido", color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Bold)
+            Text(message ?: "Estamos asignando tu turno…", color = Color(0xFFD8F3DC), textAlign = TextAlign.Center)
             TextButton(onClick = onCancel) { Text("Cancelar", color = Mango) }
         }
     }
