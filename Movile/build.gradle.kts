@@ -16,8 +16,9 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        // Dirección interna del servicio de pedidos. El usuario no necesita configurarla.
-        buildConfigField("String", "ORDER_SERVICE_URL", "\"ws://192.168.1.100:8080/orders\"")
+        // 10.0.2.2 es la computadora anfitriona vista desde el emulador Android.
+        // scripts/connect-emulators.ps1 reenvía este puerto al emulador de TV.
+        buildConfigField("String", "ORDER_SERVICE_URL", "\"ws://10.0.2.2:8080/orders\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

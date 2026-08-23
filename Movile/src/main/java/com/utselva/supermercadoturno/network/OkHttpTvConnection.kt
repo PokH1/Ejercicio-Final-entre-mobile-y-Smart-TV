@@ -22,7 +22,10 @@ class OkHttpTvConnection(
         .pingInterval(20, TimeUnit.SECONDS)
         .connectTimeout(8, TimeUnit.SECONDS)
         .build(),
-    private val json: Json = Json { ignoreUnknownKeys = true }
+    private val json: Json = Json {
+        ignoreUnknownKeys = true
+        encodeDefaults = true
+    }
 ) : TvConnection {
     private val _events = MutableSharedFlow<TvConnectionEvent>(extraBufferCapacity = 16)
     override val events: SharedFlow<TvConnectionEvent> = _events.asSharedFlow()

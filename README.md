@@ -11,13 +11,31 @@ Solución Android con dos aplicaciones Jetpack Compose. El cliente arma su pedid
 
 ## Configuración de red
 
+### Dos emuladores en la misma computadora
+
+Los emuladores no pueden comunicarse entre sí usando el `10.0.2.15` que muestra la TV, porque cada emulador tiene su propia red virtual. El proyecto móvil ya usa `ws://10.0.2.2:8080/orders`, que representa a la computadora anfitriona.
+
+1. Inicia los emuladores de teléfono y TV.
+2. Ejecuta primero la app `tv`.
+3. Desde PowerShell, en la raíz del proyecto, ejecuta:
+
+```powershell
+.\scripts\connect-emulators.ps1
+```
+
+4. Vuelve a ejecutar `mobile` y confirma un pedido.
+
+El script detecta cuál emulador tiene instalada la app TV y reenvía el puerto `8080` de la computadora hacia ese emulador. Debe ejecutarse nuevamente si reinicias el emulador TV.
+
+### Dispositivos físicos
+
 1. Conecta el teléfono y la TV a la misma red Wi-Fi.
 2. Ejecuta `tv`. Su panel izquierdo muestra una URL como `ws://192.168.1.25:8080/orders`.
 3. Copia esa dirección en `ORDER_SERVICE_URL` de `Movile/build.gradle.kts` y recompila `mobile`.
 4. Acepta el permiso de notificaciones en el móvil (Android 13 o posterior).
 5. Comprueba que el firewall o aislamiento de clientes no bloquee el puerto TCP 8080.
 
-Para un móvil emulado y un servidor en la computadora anfitriona usa `ws://10.0.2.2:8080/orders`. Esta práctica usa `ws://` sólo en la red local; una publicación real debe usar `wss://` y autenticación.
+Esta práctica usa `ws://` sólo en la red local; una publicación real debe usar `wss://` y autenticación.
 
 ## Compilación y prueba
 

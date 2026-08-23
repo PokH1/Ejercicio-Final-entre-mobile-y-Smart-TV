@@ -8,7 +8,10 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class OrderProtocolTest {
-    private val json = Json { ignoreUnknownKeys = true }
+    private val json = Json {
+        ignoreUnknownKeys = true
+        encodeDefaults = true
+    }
 
     @Test
     fun `selected products map to versioned order payload`() {
@@ -19,6 +22,9 @@ class OrderProtocolTest {
         assertEquals(1, order.protocolVersion)
         assertEquals(2, order.items.single().quantity)
         assertEquals(line.subtotal, order.total, 0.001)
+        val payload = json.encodeToString(order)
+        assertTrue(payload.contains("\"type\":\"order.create\""))
+        assertTrue(payload.contains("\"protocolVersion\":1"))
     }
 
     @Test

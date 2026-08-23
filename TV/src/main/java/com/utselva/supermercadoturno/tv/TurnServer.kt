@@ -18,7 +18,10 @@ class TurnServer(
     private val onOrder: (OrderRequest, WebSocket) -> Unit,
     private val onStatus: (String) -> Unit
 ) : WebSocketServer(InetSocketAddress("0.0.0.0", port)) {
-    private val json = Json { ignoreUnknownKeys = true }
+    private val json = Json {
+        ignoreUnknownKeys = true
+        encodeDefaults = true
+    }
     private val orderConnections = ConcurrentHashMap<String, WebSocket>()
 
     override fun onStart() = onStatus("Servidor activo en el puerto $port")

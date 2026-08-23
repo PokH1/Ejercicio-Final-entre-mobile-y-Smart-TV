@@ -7,7 +7,7 @@
 - El móvil envía el encabezado `X-Mercado-Protocol: 1`.
 - Ambos equipos deben estar en la misma red Wi-Fi.
 
-La TV muestra su dirección de conexión en pantalla. Antes de compilar el móvil, copia esa IP en `ORDER_SERVICE_URL`, dentro de `Movile/build.gradle.kts`. Para el emulador Android y una TV/servidor ejecutándose en la computadora anfitriona se usa `10.0.2.2`.
+La TV muestra su dirección de conexión en pantalla. Para dispositivos físicos, copia esa IP en `ORDER_SERVICE_URL`, dentro de `Movile/build.gradle.kts`. Con dos emuladores se usa `10.0.2.2` y se ejecuta `scripts/connect-emulators.ps1` para reenviar el puerto de la computadora al emulador TV. Nunca se edita `BuildConfig.java`: es un archivo generado desde `Movile/build.gradle.kts`.
 
 ## 1. Pedido enviado por el móvil
 
