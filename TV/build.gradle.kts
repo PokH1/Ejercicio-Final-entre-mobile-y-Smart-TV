@@ -6,40 +6,25 @@ plugins {
 }
 
 android {
-    namespace = "com.utselva.supermercadoturno"
+    namespace = "com.utselva.supermercadoturno.tv"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.utselva.supermercadoturno"
+        applicationId = "com.utselva.supermercadoturno.tv"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
-        // Dirección interna del servicio de pedidos. El usuario no necesita configurarla.
-        buildConfigField("String", "ORDER_SERVICE_URL", "\"ws://192.168.1.100:8080/orders\"")
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildFeatures {
-        compose = true
-        buildConfig = true
-    }
-
+    buildFeatures { compose = true }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-
-    packaging {
-        resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
-    }
 }
 
-kotlin {
-    jvmToolchain(17)
-}
+kotlin { jvmToolchain(17) }
 
 dependencies {
     implementation(project(":shared"))
@@ -53,10 +38,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
-
+    implementation("org.java-websocket:Java-WebSocket:1.5.6")
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
     debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
 }

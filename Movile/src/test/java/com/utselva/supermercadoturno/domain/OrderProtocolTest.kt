@@ -2,6 +2,7 @@ package com.utselva.supermercadoturno.domain
 
 import com.utselva.supermercadoturno.data.ProductCatalog
 import kotlinx.serialization.json.Json
+import com.utselva.supermercadoturno.protocol.TvTurnResponse
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -27,7 +28,7 @@ class OrderProtocolTest {
             "protocolVersion":1,
             "orderId":"MT-123",
             "ticketNumber":"A-017",
-            "estimatedMinutes":12,
+            "queuePosition":2,
             "message":"Pasa en 12 minutos",
             "screen":"checkout-2"
         }""".trimIndent()
@@ -35,7 +36,7 @@ class OrderProtocolTest {
         val response = json.decodeFromString(TvTurnResponse.serializer(), payload)
 
         assertEquals("A-017", response.ticketNumber)
-        assertEquals(12, response.estimatedMinutes)
+        assertEquals(2, response.queuePosition)
         assertTrue(response.message.contains("12"))
     }
 }

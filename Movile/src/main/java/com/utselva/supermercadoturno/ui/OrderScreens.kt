@@ -103,26 +103,39 @@ fun WaitingScreen(message: String?, onCancel: () -> Unit) {
 }
 
 @Composable
-fun TurnScreen(state: CatalogUiState, onNewOrder: () -> Unit) {
+fun TurnScreen(state: CatalogUiState) {
     val turn = state.turn ?: return
     Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).padding(24.dp), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(18.dp)) {
             Box(Modifier.size(90.dp).background(Mango, CircleShape), contentAlignment = Alignment.Center) {
                 Text("✓", fontSize = 48.sp, color = Forest, fontWeight = FontWeight.Black)
             }
-            Text("¡Pedido recibido!", fontSize = 30.sp, fontWeight = FontWeight.Bold, color = Forest)
+            Text("¡Estás en la fila!", fontSize = 30.sp, fontWeight = FontWeight.Bold, color = Forest)
             Text(turn.message, textAlign = TextAlign.Center, color = MaterialTheme.colorScheme.outline)
             Card(shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = Forest)) {
                 Column(Modifier.padding(horizontal = 44.dp, vertical = 28.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("TU TURNO", color = Mango, fontWeight = FontWeight.Bold, letterSpacing = 2.sp)
+                    Text("CLIENTE", color = Mango, fontWeight = FontWeight.Bold, letterSpacing = 2.sp)
                     Text(turn.ticketNumber, color = Color.White, fontSize = 52.sp, fontWeight = FontWeight.Black)
                     Spacer(Modifier.height(4.dp))
-                    Text("Pasa por tu pedido en ${turn.estimatedMinutes} min", color = Color(0xFFD8F3DC), textAlign = TextAlign.Center)
+                    Text("Posición ${turn.queuePosition} · espera el aviso", color = Color(0xFFD8F3DC), textAlign = TextAlign.Center)
                 }
             }
-            Button(onClick = onNewOrder, modifier = Modifier.fillMaxWidth().height(56.dp), shape = RoundedCornerShape(18.dp)) {
-                Text("Hacer otro pedido")
-            }
+            Text("Mantén abierta la aplicación para recibir la alerta.", textAlign = TextAlign.Center, color = Forest, fontWeight = FontWeight.SemiBold)
+        }
+    }
+}
+
+@Composable
+fun CalledScreen(state: CatalogUiState, onNewOrder: () -> Unit) {
+    val called = state.calledTurn ?: return
+    Box(Modifier.fillMaxSize().background(Mango).padding(24.dp), contentAlignment = Alignment.Center) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(20.dp)) {
+            Text("🔔", fontSize = 72.sp)
+            Text("¡ES TU TURNO!", fontSize = 36.sp, fontWeight = FontWeight.Black, color = Forest, textAlign = TextAlign.Center)
+            Text(called.ticketNumber, fontSize = 62.sp, fontWeight = FontWeight.Black, color = Forest)
+            Text("Pasa ahora a ${called.checkout}", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = Forest, textAlign = TextAlign.Center)
+            Text(called.message, color = Forest, textAlign = TextAlign.Center)
+            Button(onClick = onNewOrder, modifier = Modifier.fillMaxWidth().height(58.dp)) { Text("Entendido") }
         }
     }
 }

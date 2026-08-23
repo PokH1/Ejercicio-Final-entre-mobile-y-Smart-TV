@@ -1,55 +1,44 @@
-# Mercado La Selva
+# Mercado La Selva - turnos móvil y Smart TV
 
-Aplicación Android para seleccionar productos de supermercado, enviar el pedido a una Smart TV y recibir el turno en el que estará listo para recogerse.
+Solución Android con dos aplicaciones Jetpack Compose. El cliente arma su pedido en el móvil; la Smart TV recibe y presenta la lista de productos, asigna indicadores `Cliente #1`, `Cliente #2`, etc., y llama automáticamente al siguiente cada 15 segundos. Cuando llega su turno, el teléfono muestra una advertencia y una notificación para pasar a Caja 1.
 
-## Estado del proyecto
+## Módulos
 
-- `Movile/`: aplicación móvil funcional desarrollada con Kotlin y Jetpack Compose.
-- `TV/`: reservado para la futura aplicación de Smart TV.
-- Rama de desarrollo móvil: `mobile`.
+- `Movile/` (`:mobile`): catálogo, carrito, envío, espera y notificación.
+- `TV/` (`:tv`): aplicación Android TV, servidor WebSocket y pantalla de cola.
+- `shared/` (`:shared`): modelos JSON compartidos.
+- `docs/`: protocolo y diagrama de contexto.
 
-## Ejecutar la aplicación
+## Configuración de red
 
-1. Abre la raíz del repositorio en Android Studio.
-2. Espera a que Gradle sincronice el proyecto.
-3. Selecciona la configuración `mobile` y ejecuta en un dispositivo con Android 8.0 (API 26) o superior.
+1. Conecta el teléfono y la TV a la misma red Wi-Fi.
+2. Ejecuta `tv`. Su panel izquierdo muestra una URL como `ws://192.168.1.25:8080/orders`.
+3. Copia esa dirección en `ORDER_SERVICE_URL` de `Movile/build.gradle.kts` y recompila `mobile`.
+4. Acepta el permiso de notificaciones en el móvil (Android 13 o posterior).
+5. Comprueba que el firewall o aislamiento de clientes no bloquee el puerto TCP 8080.
 
-También puedes compilar desde PowerShell:
+Para un móvil emulado y un servidor en la computadora anfitriona usa `ws://10.0.2.2:8080/orders`. Esta práctica usa `ws://` sólo en la red local; una publicación real debe usar `wss://` y autenticación.
 
-```powershell
-.\gradlew.bat :mobile:assembleDebug
-```
+## Compilación y prueba
 
-El APK se genera en `Movile/build/outputs/apk/debug/mobile-debug.apk`.
-
-## Configuración interna de la conexión
-
-El móvil usa WebSocket para mantener una comunicación bidireccional. La TV o el servidor asociado debe escuchar, por ejemplo, en:
-
-```text
-ws://192.168.1.100:8080/orders
-```
-
-La dirección no se muestra al usuario. Antes de compilar, sustituye `192.168.1.100` en `Movile/build.gradle.kts` por la IP local del dispositivo que ejecuta la aplicación de TV. Ambos dispositivos deben estar conectados a la misma red Wi-Fi.
-
-Para probar con el emulador Android y un servidor ejecutándose en la computadora anfitriona usa:
-
-```text
-ws://10.0.2.2:8080/orders
-```
-
-## Flujo
-
-1. El usuario filtra el catálogo y selecciona cantidades.
-2. Revisa el pedido, escribe su nombre y lo confirma.
-3. El móvil abre el WebSocket y envía un mensaje `order.create`.
-4. La TV registra el pedido y responde con `order.turn`.
-5. El móvil presenta el número de turno y el tiempo estimado.
-
-La especificación completa del intercambio está en `docs/TV_PROTOCOL.md`.
-
-## Verificación
+Abre la raíz en Android Studio y ejecuta primero `tv` en Android TV (API 26+) y después `mobile` en un teléfono (API 26+).
 
 ```powershell
-.\gradlew.bat :mobile:testDebugUnitTest :mobile:assembleDebug
+.\gradlew.bat :mobile:testDebugUnitTest :tv:testDebugUnitTest :mobile:assembleDebug :tv:assembleDebug
 ```
+
+Los APK quedan en `Movile/build/outputs/apk/debug/mobile-debug.apk` y `TV/build/outputs/apk/debug/tv-debug.apk`.
+
+## Flujo de demostración
+
+1. Agrega productos en el móvil, escribe el nombre y confirma.
+2. La TV muestra indicador, cliente, productos, cantidades y total.
+3. El móvil muestra su indicador y conserva la conexión.
+4. Cada 15 segundos la TV llama al primer cliente y lo muestra en “Turno en caja”.
+5. Ese cliente recibe una notificación y la pantalla “¡ES TU TURNO!”.
+
+Consulta `docs/TV_PROTOCOL.md` y `docs/DIAGRAMA_CONTEXTO.md`.
+
+## Pendientes de la entrega académica
+
+Para completar la evidencia de la rúbrica aún deben añadirse con los datos de los integrantes: hoja de presentación, capturas comentadas, video MKV, URL del repositorio y el historial de commits requerido. Antes de comprimir, excluye las carpetas `build` y usa la nomenclatura indicada por el docente.

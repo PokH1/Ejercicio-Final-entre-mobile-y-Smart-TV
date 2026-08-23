@@ -17,4 +17,7 @@ dependencyResolutionManagement {
 rootProject.name = "SupermercadoTurno"
 include(":mobile")
 project(":mobile").projectDir = file("Movile")
+include(":shared")
+include(":tv")
+project(":tv").projectDir = file("TV")
 

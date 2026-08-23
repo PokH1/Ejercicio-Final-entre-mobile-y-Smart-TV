@@ -7,8 +7,9 @@ import com.utselva.supermercadoturno.data.ProductCatalog
 import com.utselva.supermercadoturno.domain.CartLine
 import com.utselva.supermercadoturno.domain.Product
 import com.utselva.supermercadoturno.domain.ProductCategory
-import com.utselva.supermercadoturno.domain.OrderRequest
-import com.utselva.supermercadoturno.domain.TvTurnResponse
+import com.utselva.supermercadoturno.protocol.OrderRequest
+import com.utselva.supermercadoturno.protocol.TurnCalledResponse
+import com.utselva.supermercadoturno.protocol.TvTurnResponse
 import com.utselva.supermercadoturno.domain.toOrderRequest
 import com.utselva.supermercadoturno.network.OkHttpTvConnection
 import com.utselva.supermercadoturno.network.TvConnection
@@ -20,7 +21,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-enum class AppScreen { CATALOG, CART, WAITING, TURN }
+enum class AppScreen { CATALOG, CART, WAITING, TURN, CALLED }
 enum class ConnectionStatus { DISCONNECTED, CONNECTING, CONNECTED, ERROR }
 
 data class CatalogUiState(
@@ -31,7 +32,8 @@ data class CatalogUiState(
     val customerName: String = "",
     val connectionStatus: ConnectionStatus = ConnectionStatus.DISCONNECTED,
     val statusMessage: String? = null,
-    val turn: TvTurnResponse? = null
+    val turn: TvTurnResponse? = null,
+    val calledTurn: TurnCalledResponse? = null
 ) {
     val visibleProducts: List<Product>
         get() = products.filter { selectedCategory == null || it.category == selectedCategory }
@@ -132,6 +134,9 @@ class CatalogViewModel(
             }
             is TvConnectionEvent.TurnReceived -> _uiState.update {
                 it.copy(screen = AppScreen.TURN, turn = event.response, quantities = emptyMap(), statusMessage = null)
+            }
+            is TvConnectionEvent.TurnCalled -> _uiState.update {
+                it.copy(screen = AppScreen.CALLED, calledTurn = event.response, statusMessage = null)
             }
             is TvConnectionEvent.Disconnected -> _uiState.update {
                 if (it.screen == AppScreen.TURN) it else it.copy(connectionStatus = ConnectionStatus.DISCONNECTED, statusMessage = "El servicio no está disponible. Inténtalo nuevamente.")

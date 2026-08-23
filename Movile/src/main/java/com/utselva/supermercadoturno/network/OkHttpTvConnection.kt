@@ -1,7 +1,10 @@
 package com.utselva.supermercadoturno.network
 
-import com.utselva.supermercadoturno.domain.OrderRequest
-import com.utselva.supermercadoturno.domain.TvTurnResponse
+import com.utselva.supermercadoturno.protocol.MessageEnvelope
+import com.utselva.supermercadoturno.protocol.OrderRequest
+import com.utselva.supermercadoturno.protocol.TurnCalledResponse
+import com.utselva.supermercadoturno.protocol.TvErrorResponse
+import com.utselva.supermercadoturno.protocol.TvTurnResponse
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -58,11 +61,11 @@ class OkHttpTvConnection(
 
         override fun onMessage(webSocket: WebSocket, text: String) {
             try {
-                val response = json.decodeFromString(TvTurnResponse.serializer(), text)
-                if (response.type == "order.turn") {
-                    _events.tryEmit(TvConnectionEvent.TurnReceived(response))
-                } else {
-                    _events.tryEmit(TvConnectionEvent.Error("Respuesta de TV no reconocida"))
+                when (json.decodeFromString(MessageEnvelope.serializer(), text).type) {
+                    "order.turn" -> _events.tryEmit(TvConnectionEvent.TurnReceived(json.decodeFromString(TvTurnResponse.serializer(), text)))
+                    "order.called" -> _events.tryEmit(TvConnectionEvent.TurnCalled(json.decodeFromString(TurnCalledResponse.serializer(), text)))
+                    "order.error" -> _events.tryEmit(TvConnectionEvent.Error(json.decodeFromString(TvErrorResponse.serializer(), text).message))
+                    else -> _events.tryEmit(TvConnectionEvent.Error("Respuesta de TV no reconocida"))
                 }
             } catch (_: SerializationException) {
                 _events.tryEmit(TvConnectionEvent.Error("La TV envió una respuesta inválida"))

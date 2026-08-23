@@ -1,43 +1,7 @@
 package com.utselva.supermercadoturno.domain
 
-import kotlinx.serialization.Serializable
-
-@Serializable
-data class OrderLinePayload(
-    val productId: String,
-    val name: String,
-    val unitPrice: Double,
-    val quantity: Int,
-    val subtotal: Double
-)
-
-@Serializable
-data class OrderRequest(
-    val type: String = "order.create",
-    val protocolVersion: Int = 1,
-    val orderId: String,
-    val customerName: String,
-    val createdAtEpochMillis: Long,
-    val items: List<OrderLinePayload>,
-    val total: Double
-)
-
-@Serializable
-data class TvTurnResponse(
-    val type: String = "order.turn",
-    val protocolVersion: Int = 1,
-    val orderId: String,
-    val ticketNumber: String,
-    val estimatedMinutes: Int,
-    val message: String = "Pedido recibido"
-)
-
-@Serializable
-data class TvErrorResponse(
-    val type: String = "order.error",
-    val orderId: String? = null,
-    val message: String
-)
+import com.utselva.supermercadoturno.protocol.OrderLinePayload
+import com.utselva.supermercadoturno.protocol.OrderRequest
 
 fun List<CartLine>.toOrderRequest(
     orderId: String,
