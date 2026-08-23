@@ -56,7 +56,3 @@ Los APK quedan en `Movile/build/outputs/apk/debug/mobile-debug.apk` y `TV/build/
 5. Ese cliente recibe una notificación y la pantalla “¡ES TU TURNO!”.
 
 Consulta `docs/TV_PROTOCOL.md` y `docs/DIAGRAMA_CONTEXTO.md`.
-
-## Pendientes de la entrega académica
-
-Para completar la evidencia de la rúbrica aún deben añadirse con los datos de los integrantes: hoja de presentación, capturas comentadas, video MKV, URL del repositorio y el historial de commits requerido. Antes de comprimir, excluye las carpetas `build` y usa la nomenclatura indicada por el docente.
