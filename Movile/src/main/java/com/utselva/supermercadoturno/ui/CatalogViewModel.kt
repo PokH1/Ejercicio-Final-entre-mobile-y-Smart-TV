@@ -2,6 +2,7 @@ package com.utselva.supermercadoturno.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.utselva.supermercadoturno.BuildConfig
 import com.utselva.supermercadoturno.data.ProductCatalog
 import com.utselva.supermercadoturno.domain.CartLine
 import com.utselva.supermercadoturno.domain.Product
@@ -28,7 +29,6 @@ data class CatalogUiState(
     val quantities: Map<String, Int> = emptyMap(),
     val screen: AppScreen = AppScreen.CATALOG,
     val customerName: String = "",
-    val tvEndpoint: String = "ws://192.168.1.100:8080/orders",
     val connectionStatus: ConnectionStatus = ConnectionStatus.DISCONNECTED,
     val statusMessage: String? = null,
     val turn: TvTurnResponse? = null
@@ -46,7 +46,8 @@ data class CatalogUiState(
 }
 
 class CatalogViewModel(
-    private val tvConnection: TvConnection = OkHttpTvConnection()
+    private val tvConnection: TvConnection = OkHttpTvConnection(),
+    private val orderServiceUrl: String = BuildConfig.ORDER_SERVICE_URL
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(CatalogUiState())
     val uiState: StateFlow<CatalogUiState> = _uiState.asStateFlow()
@@ -92,10 +93,6 @@ class CatalogViewModel(
         _uiState.update { it.copy(customerName = value.take(60), statusMessage = null) }
     }
 
-    fun updateTvEndpoint(value: String) {
-        _uiState.update { it.copy(tvEndpoint = value, statusMessage = null) }
-    }
-
     fun submitOrder() {
         val state = _uiState.value
         when {
@@ -108,9 +105,9 @@ class CatalogViewModel(
                     createdAtEpochMillis = System.currentTimeMillis()
                 )
                 _uiState.update {
-                    it.copy(screen = AppScreen.WAITING, connectionStatus = ConnectionStatus.CONNECTING, statusMessage = "Conectando con la TV…")
+                    it.copy(screen = AppScreen.WAITING, connectionStatus = ConnectionStatus.CONNECTING, statusMessage = "Registrando tu pedido…")
                 }
-                tvConnection.connect(state.tvEndpoint)
+                tvConnection.connect(orderServiceUrl)
             }
         }
     }
@@ -118,7 +115,7 @@ class CatalogViewModel(
     fun startAnotherOrder() {
         tvConnection.disconnect()
         pendingOrder = null
-        _uiState.value = CatalogUiState(tvEndpoint = _uiState.value.tvEndpoint)
+        _uiState.value = CatalogUiState()
     }
 
     private fun handleConnectionEvent(event: TvConnectionEvent) {
@@ -129,7 +126,7 @@ class CatalogViewModel(
                 _uiState.update {
                     it.copy(
                         connectionStatus = ConnectionStatus.CONNECTED,
-                        statusMessage = if (sent) "Pedido enviado. Esperando el turno…" else "No se pudo enviar el pedido"
+                        statusMessage = if (sent) "Pedido registrado. Estamos asignando tu turno…" else "No pudimos registrar tu pedido"
                     )
                 }
             }
@@ -137,10 +134,10 @@ class CatalogViewModel(
                 it.copy(screen = AppScreen.TURN, turn = event.response, quantities = emptyMap(), statusMessage = null)
             }
             is TvConnectionEvent.Disconnected -> _uiState.update {
-                if (it.screen == AppScreen.TURN) it else it.copy(connectionStatus = ConnectionStatus.DISCONNECTED, statusMessage = event.reason)
+                if (it.screen == AppScreen.TURN) it else it.copy(connectionStatus = ConnectionStatus.DISCONNECTED, statusMessage = "El servicio no está disponible. Inténtalo nuevamente.")
             }
             is TvConnectionEvent.Error -> _uiState.update {
-                it.copy(screen = AppScreen.CART, connectionStatus = ConnectionStatus.ERROR, statusMessage = event.message)
+                it.copy(screen = AppScreen.CART, connectionStatus = ConnectionStatus.ERROR, statusMessage = "No pudimos registrar tu pedido. Revisa tu conexión e inténtalo nuevamente.")
             }
         }
     }

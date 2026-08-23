@@ -40,7 +40,6 @@ fun MercadoTurnoApp() {
                 state = state,
                 onBack = viewModel::backToCatalog,
                 onNameChanged = viewModel::updateCustomerName,
-                onEndpointChanged = viewModel::updateTvEndpoint,
                 onSubmit = viewModel::submitOrder
             )
             AppScreen.WAITING -> WaitingScreen(state.statusMessage, viewModel::backToCatalog)

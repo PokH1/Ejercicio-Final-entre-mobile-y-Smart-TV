@@ -16,6 +16,9 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        // Dirección interna del servicio de pedidos. El usuario no necesita configurarla.
+        buildConfigField("String", "ORDER_SERVICE_URL", "\"ws://192.168.1.100:8080/orders\"")
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
